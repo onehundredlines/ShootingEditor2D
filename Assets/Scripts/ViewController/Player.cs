@@ -35,8 +35,8 @@ namespace ShootingEditor2D
             mBoxCollider2D.sharedMaterial.friction = mGroundCheck.Triggered ? 0.4f : 0;
             if (mCanShoot && Input.GetKey(KeyCode.J)) StartCoroutine(DoShoot());
             var horizontal = Input.GetAxis("Horizontal");
-            if (horizontal > 0) transform.localScale = new Vector3(1, 1, 1);
-            else if (horizontal < 0) transform.localScale = new Vector3(-1, 1, 1);
+            if (horizontal > 0) transform.localEulerAngles = new Vector3(0, 0, 0);
+            else if (horizontal < 0) transform.localEulerAngles = new Vector3(0, 180, 0);
         }
         private void FixedUpdate()
         {
@@ -55,7 +55,7 @@ namespace ShootingEditor2D
         {
             mCanShoot = false;
             mGun.Shoot();
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.05f);
             mCanShoot = true;
         }
     }

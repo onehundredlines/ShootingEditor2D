@@ -12,17 +12,11 @@ namespace ShootingEditor2D
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (IsInLayerMask(other.gameObject, TargetLayers))
-            {
-                EnterCount++;
-            }
+            if (IsInLayerMask(other.gameObject, TargetLayers)) EnterCount++;
         }
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (IsInLayerMask(other.gameObject, TargetLayers))
-            {
-                EnterCount--;
-            }
+            if (IsInLayerMask(other.gameObject, TargetLayers)) EnterCount--;
         }
         private bool IsInLayerMask(GameObject obj, LayerMask mask)
         {

@@ -14,13 +14,14 @@ namespace ShootingEditor2D
         }
         public void Shoot()
         {
-            var bullet = Instantiate(mBullet);
+            var bullet = Instantiate(mBullet,mBulletPoint.position,  Quaternion.identity);
             if (bullet == null) return;
             var trans = mBulletPoint.transform;
-            bullet.transform.position = trans.position;
+            var bulletTrans = bullet.transform;
+            bulletTrans.position = trans.position;
+            bulletTrans.rotation = trans.rotation;
             bullet.Init(mBulletPoint);               
             bullet.gameObject.SetActive(true);
-            Destroy(bullet, 2f);
         }
     }
 }
