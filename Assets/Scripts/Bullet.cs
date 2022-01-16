@@ -6,14 +6,23 @@ namespace ShootingEditor2D
         [SerializeField]
         private Rigidbody2D mRigidbody2D;
         private float mBulletForce;
+
         private void Awake()
         {
             mRigidbody2D = GetComponent<Rigidbody2D>();
             mBulletForce = 80f;
         }
-        private void OnEnable()
+        private void OnCollisionEnter2D(Collision2D other)
         {
-            mRigidbody2D.AddForce(new Vector2(transform.position.x, 0) * mBulletForce, ForceMode2D.Impulse);
+            if (other.gameObject.CompareTag("Enemy"))
+            {
+                Destroy(other.gameObject);
+                Destroy(gameObject);
+            }
+        }
+        public void Init(Transform trans)
+        {
+            mRigidbody2D.AddForce(trans.right * mBulletForce, ForceMode2D.Impulse);
         }
     }
 }

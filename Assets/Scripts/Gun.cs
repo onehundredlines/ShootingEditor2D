@@ -7,21 +7,20 @@ namespace ShootingEditor2D
         private Bullet mBullet;
         [SerializeField]
         private Transform mBulletPoint;
-        private GameObject bulletObj;
         private void Awake()
         {
             mBulletPoint = transform.Find("BulletPoint").transform;
-            bulletObj = Resources.Load<GameObject>("Bullet");
+            mBullet = Resources.Load<Bullet>("Bullet");
         }
         public void Shoot()
         {
-            var bulletGO = Instantiate(bulletObj);
-            if (bulletGO == null) return;
+            var bullet = Instantiate(mBullet);
+            if (bullet == null) return;
             var trans = mBulletPoint.transform;
-            bulletGO.transform.localPosition = trans.position;
-            bulletGO.transform.localRotation = trans.rotation;
-            bulletGO.gameObject.SetActive(true);
-            Destroy(bulletGO, 1f);
+            bullet.transform.position = trans.position;
+            bullet.Init(mBulletPoint);               
+            bullet.gameObject.SetActive(true);
+            Destroy(bullet, 2f);
         }
     }
 }

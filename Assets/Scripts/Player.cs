@@ -14,7 +14,7 @@ namespace ShootingEditor2D
         private bool mJumped;
         private Vector2 mJumpForce;
         private float mFallForce;
-        private bool mShooting;
+        private bool mCanShoot;
 
         [SerializeField]
         private TriggerCheck mGroundCheck;
@@ -27,14 +27,13 @@ namespace ShootingEditor2D
             mSpeed = 6f;
             mJumpForce = new Vector2(0, 12f);
             mFallForce = -25f;
-            mShooting = false;
+            mCanShoot = true;
         }
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.K) && mGroundCheck.Triggered) mJumped = true;
             mBoxCollider2D.sharedMaterial.friction = mGroundCheck.Triggered ? 0.4f : 0;
-            if (Input.GetKey(KeyCode.J) || Input.GetKeyDown(KeyCode.J) && !mShooting) StartCoroutine(DoShoot());
-            if (Input.GetKeyUp(KeyCode.J)) mShooting = false;
+            if (mCanShoot && Input.GetKey(KeyCode.J)) StartCoroutine(DoShoot());
             var horizontal = Input.GetAxis("Horizontal");
             if (horizontal > 0) transform.localScale = new Vector3(1, 1, 1);
             else if (horizontal < 0) transform.localScale = new Vector3(-1, 1, 1);
@@ -54,10 +53,10 @@ namespace ShootingEditor2D
 
         private IEnumerator DoShoot()
         {
-            mShooting = true;
+            mCanShoot = false;
             mGun.Shoot();
             yield return new WaitForSeconds(0.5f);
-            mShooting = false;
+            mCanShoot = true;
         }
     }
 }
