@@ -7,6 +7,7 @@ namespace ShootingEditor2D
         {
             RegisterSystem<IStatSystem>(new StatSystem());
             RegisterModel<IPlayerModel>(new PlayerModel());
+            RegisterSystem<IGunSystem>(new GunSystem());
         }
     }
 }
