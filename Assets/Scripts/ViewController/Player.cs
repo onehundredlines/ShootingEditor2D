@@ -18,6 +18,7 @@ namespace ShootingEditor2D
 
         [SerializeField]
         private TriggerCheck mGroundCheck;
+
         private void Awake()
         {
             mGun = transform.Find("Gun").GetComponent<Gun>();
@@ -35,14 +36,9 @@ namespace ShootingEditor2D
             mBoxCollider2D.sharedMaterial.friction = mGroundCheck.Triggered ? 0.4f : 0;
             if (mCanShoot && Input.GetKey(KeyCode.J)) StartCoroutine(DoShoot());
             var horizontal = Input.GetAxis("Horizontal");
+            mRigidbody2D.velocity = new Vector2(horizontal * mSpeed, mRigidbody2D.velocity.y);
             if (horizontal > 0) transform.localEulerAngles = new Vector3(0, 0, 0);
             else if (horizontal < 0) transform.localEulerAngles = new Vector3(0, 180, 0);
-        }
-        private void FixedUpdate()
-        {
-            var horizontal = Input.GetAxis("Horizontal");
-            mRigidbody2D.velocity = new Vector2(horizontal * mSpeed, mRigidbody2D.velocity.y);
-
             if (mJumped)
             {
                 mJumped = false;
@@ -50,7 +46,6 @@ namespace ShootingEditor2D
             }
             if (mRigidbody2D.velocity.y < 0 && !mGroundCheck.Triggered) mRigidbody2D.velocity += new Vector2(0, mFallForce * Time.deltaTime);
         }
-
         private IEnumerator DoShoot()
         {
             mCanShoot = false;

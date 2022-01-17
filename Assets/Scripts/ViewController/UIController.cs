@@ -20,7 +20,7 @@ namespace ShootingEditor2D
         private void OnGUI()
         {
             GUI.Label(new Rect(10, 10, 300, 100), $"生命: {mPlayerModel.Hp.Value}/3", mLabelStyle.Value);
-            GUI.Label(new Rect(Screen.width - 10 - 300, 10, 300, 100), $"击杀: {mStatSystem.KillCount.Value}/3", mLabelStyle.Value);
+            GUI.Label(new Rect(Screen.width - 10 - 300, 10, 300, 100), $"击杀: {mStatSystem.KillCount.Value}", mLabelStyle.Value);
         }
         public IArchitecture GetArchitecture() => ShootingEditor2D.Interface;
     }
