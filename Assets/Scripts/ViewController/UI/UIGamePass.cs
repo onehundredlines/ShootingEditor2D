@@ -18,17 +18,9 @@ namespace ShootingEditor2D
         private const float oneHalf = 0.5f;
         private void OnGUI()
         {
-            var labelWidth = 1000;
-            var labelHeight = 200;
-            var labelPos = new Vector2(Screen.width - labelWidth, Screen.height - labelHeight) * oneHalf;
-            var labelSize = new Vector2(labelWidth, labelHeight);
-            var labelRect = new Rect(labelPos, labelSize);
+            var labelRect = RectHelper.RectForAnchorCenter(Screen.width * oneHalf, Screen.height * oneHalf, 1000, 200);
             GUI.Label(labelRect, "游戏通关", mLabelStyle.Value);
-            var buttonWidth = 300;
-            var buttonHeight = 100;
-            var buttonPos = new Vector2(Screen.width, Screen.height) * oneHalf - new Vector2(buttonWidth * oneHalf, buttonHeight * oneHalf) + new Vector2(0, 150);
-            var buttonSize = new Vector2(buttonWidth, buttonHeight);
-            var buttonRect = new Rect(buttonPos, buttonSize);
+            var buttonRect = RectHelper.RectForAnchorCenter(Screen.width * oneHalf, Screen.height * oneHalf - 150, 300, 100);
             if (GUI.Button(buttonRect, "回到首页", mButtonStyle.Value)) SceneManager.LoadScene("GameStart");
         }
     }

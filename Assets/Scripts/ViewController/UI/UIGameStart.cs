@@ -18,17 +18,9 @@ namespace ShootingEditor2D
         private const float oneHalf = 0.5f;
         private void OnGUI()
         {
-            var labelWidth = 1200;
-            var labelHeight = 400;
-            var labelSize = new Vector2(labelWidth, labelHeight);
-            var labelPos = new Vector2(Screen.width, Screen.height) * oneHalf - labelSize * oneHalf - Vector2.up * 150;
-            var labelRect = new Rect(labelPos, labelSize);
+            var labelRect = RectHelper.RectForAnchorCenter(Screen.width * oneHalf, Screen.height * oneHalf, 1200, 400);
             GUI.Label(labelRect, "Shoot Editor 2D", mLabelStyle.Value);
-            var buttonWidth = 300;
-            var buttonHeight = 100;
-            var buttonSize = new Vector2(buttonWidth, buttonHeight);
-            var buttonPos = new Vector2(Screen.width, Screen.height) * oneHalf - buttonSize * oneHalf + Vector2.up * 150;
-            var buttonRect = new Rect(buttonPos, buttonSize);
+            var buttonRect = RectHelper.RectForAnchorCenter(Screen.width * oneHalf, Screen.height * oneHalf - 150, 300, 100);
             if (GUI.Button(buttonRect, "开始游戏", mButtonStyle.Value)) SceneManager.LoadScene("SampleScene");
         }
     }
