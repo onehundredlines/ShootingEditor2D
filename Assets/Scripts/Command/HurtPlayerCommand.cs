@@ -1,6 +1,4 @@
-using System.Security.Principal;
 using FrameworkDesign;
-using UnityEngine;
 namespace ShootingEditor2D.Command
 {
     public class HurtPlayerCommand : AbstractCommand

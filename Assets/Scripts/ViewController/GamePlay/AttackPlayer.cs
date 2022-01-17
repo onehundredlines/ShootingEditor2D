@@ -1,4 +1,3 @@
-using System;
 using FrameworkDesign;
 using ShootingEditor2D.Command;
 using UnityEngine;

@@ -13,7 +13,7 @@ namespace ShootingEditor2D
         private float mSpeed;
         private bool mJumped;
         private Vector2 mJumpForce;
-        private float mFallForce;
+        private int mFallMultiple;
         private bool mCanShoot;
 
         [SerializeField]
@@ -27,7 +27,7 @@ namespace ShootingEditor2D
             mGroundCheck = transform.Find("GroundCheck").GetComponent<TriggerCheck>();
             mSpeed = 6f;
             mJumpForce = new Vector2(0, 12f);
-            mFallForce = -25f;
+            mFallMultiple = 4;
             mCanShoot = true;
         }
         private void Update()
@@ -35,8 +35,8 @@ namespace ShootingEditor2D
             if (Input.GetKeyDown(KeyCode.K) && mGroundCheck.Triggered) mJumped = true;
             mBoxCollider2D.sharedMaterial.friction = mGroundCheck.Triggered ? 0.4f : 0;
             if (mCanShoot && Input.GetKey(KeyCode.J)) StartCoroutine(DoShoot());
+            
             var horizontal = Input.GetAxis("Horizontal");
-            mRigidbody2D.velocity = new Vector2(horizontal * mSpeed, mRigidbody2D.velocity.y);
             if (horizontal > 0) transform.localEulerAngles = new Vector3(0, 0, 0);
             else if (horizontal < 0) transform.localEulerAngles = new Vector3(0, 180, 0);
             if (mJumped)
@@ -44,7 +44,8 @@ namespace ShootingEditor2D
                 mJumped = false;
                 mRigidbody2D.AddForce(mJumpForce, ForceMode2D.Impulse);
             }
-            if (mRigidbody2D.velocity.y < 0 && !mGroundCheck.Triggered) mRigidbody2D.velocity += new Vector2(0, mFallForce * Time.deltaTime);
+            if (mRigidbody2D.velocity.y < 0 && !mGroundCheck.Triggered) mRigidbody2D.velocity -= mJumpForce * mFallMultiple * Time.deltaTime;
+            else mRigidbody2D.velocity = new Vector2(horizontal * mSpeed, mRigidbody2D.velocity.y);
         }
         private IEnumerator DoShoot()
         {
