@@ -23,9 +23,6 @@ namespace ShootingEditor2D
                 levelItemGameObj.transform.position = new Vector3(x, y, 0);
                 Debug.Log($"name {name}, x {x}, y {y}");
             }
-
-
-
         }
     }
 }
