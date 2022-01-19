@@ -8,7 +8,7 @@ namespace ShootingEditor2D
         private TriggerCheck mWalkCheck;
         private TriggerCheck mFallCheck;
         private TriggerCheck mGroundCheck;
-
+        
         private void Awake()
         {
             mRigidbody2D = GetComponent<Rigidbody2D>();
