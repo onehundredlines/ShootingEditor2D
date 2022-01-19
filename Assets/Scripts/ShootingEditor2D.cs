@@ -5,9 +5,10 @@ namespace ShootingEditor2D
     {
         protected override void Init()
         {
+            RegisterModel<IGunConfigModel>(new GunConfigModel());
+            RegisterModel<IPlayerModel>(new PlayerModel());
             RegisterSystem<ITimeSystem>(new TimeSystem());
             RegisterSystem<IStatSystem>(new StatSystem());
-            RegisterModel<IPlayerModel>(new PlayerModel());
             RegisterSystem<IGunSystem>(new GunSystem());
         }
     }
