@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 namespace ShootingEditor2D
 {
     public class Player : MonoBehaviour
@@ -14,7 +13,6 @@ namespace ShootingEditor2D
         private bool mJumped;
         private Vector2 mJumpForce;
         private int mFallMultiple;
-        private bool mCanShoot;
 
         [SerializeField]
         private TriggerCheck mGroundCheck;
@@ -28,14 +26,13 @@ namespace ShootingEditor2D
             mSpeed = 6f;
             mJumpForce = new Vector2(0, 12f);
             mFallMultiple = 4;
-            mCanShoot = true;
         }
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.K) && mGroundCheck.Triggered) mJumped = true;
             mBoxCollider2D.sharedMaterial.friction = mGroundCheck.Triggered ? 0.4f : 0;
 
-            if (Input.GetKey(KeyCode.J) && mCanShoot) StartCoroutine(DoShoot());
+            if (Input.GetKey(KeyCode.J)) mGun.Shoot();
 
             var horizontal = Input.GetAxis("Horizontal");
             if (horizontal > 0) transform.localEulerAngles = new Vector3(0, 0, 0);
@@ -47,13 +44,6 @@ namespace ShootingEditor2D
             }
             if (mRigidbody2D.velocity.y < 0 && !mGroundCheck.Triggered) mRigidbody2D.velocity -= mJumpForce * mFallMultiple * Time.deltaTime;
             else mRigidbody2D.velocity = new Vector2(horizontal * mSpeed, mRigidbody2D.velocity.y);
-        }
-        private IEnumerator DoShoot()
-        {
-            mCanShoot = false;
-            mGun.Shoot();
-            yield return new WaitForSeconds(0.2f);
-            mCanShoot = true;
         }
     }
 }

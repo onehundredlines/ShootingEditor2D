@@ -1,4 +1,3 @@
-using System;
 using FrameworkDesign;
 using Random = UnityEngine.Random;
 namespace ShootingEditor2D.Command
