@@ -18,6 +18,8 @@ namespace FrameworkDesign
             }
         }
         private Action<T> mOnValueChanged = v => { };
+        public BindableProperty() { }
+        public BindableProperty(T value) { Value = value; }
         public ICancel RegisterOnValueChanged(Action<T> onValueChanged)
         {
             mOnValueChanged += onValueChanged;

@@ -9,7 +9,9 @@ namespace ShootingEditor2D
         public static readonly ShootCommand Single = new ShootCommand();
         protected override void OnExecute()
         {
-            --this.GetSystem<IGunSystem>().CurrentGunInfo.BulletCountInGun.Value;
+            var gunSystem = this.GetSystem<IGunSystem>();
+            gunSystem.CurrentGunInfo.BulletCountInGun.Value--;
+            gunSystem.CurrentGunInfo.State.Value = GunState.Shooting;
         }
     }
 }
