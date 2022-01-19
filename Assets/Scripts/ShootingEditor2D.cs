@@ -5,6 +5,7 @@ namespace ShootingEditor2D
     {
         protected override void Init()
         {
+            RegisterSystem<ITimeSystem>(new TimeSystem());
             RegisterSystem<IStatSystem>(new StatSystem());
             RegisterModel<IPlayerModel>(new PlayerModel());
             RegisterSystem<IGunSystem>(new GunSystem());
