@@ -10,7 +10,7 @@ namespace ShootingEditor2D
         protected override void OnInit() { }
         public GunInfo CurrentGunInfo { get; } = new GunInfo
         {
-            BulletCount = new BindableProperty<int>
+            BulletCountInGun = new BindableProperty<int>
             {
                 Value = 3
             }

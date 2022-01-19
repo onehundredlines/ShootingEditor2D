@@ -20,7 +20,7 @@ namespace ShootingEditor2D
         }
         public void Shoot()
         {
-            if (mGunInfo.BulletCount.Value > 0)
+            if (mGunInfo.BulletCountInGun.Value > 0)
             {
                 var bullet = Instantiate(mBullet, mBulletPoint.position, Quaternion.identity);
                 if (bullet == null) return;

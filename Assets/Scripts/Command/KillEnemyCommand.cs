@@ -9,10 +9,7 @@ namespace ShootingEditor2D.Command
         {
             this.GetSystem<IStatSystem>().KillCount.Value++;
             var randomIndex = Random.Range(0, 10);
-            if (randomIndex < 8)
-            {
-                this.GetSystem<IGunSystem>().CurrentGunInfo.BulletCount.Value += Random.Range(1, 4);
-            }
+            if (randomIndex < 8) this.GetSystem<IGunSystem>().CurrentGunInfo.BulletCountInGun.Value += Random.Range(1, 4);
         }
     }
 }

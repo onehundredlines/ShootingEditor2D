@@ -4,9 +4,9 @@ namespace FrameworkDesign
     /// <summary>
     /// 数据 + 数据变更事件，节省代码量
     /// </summary>
-    public class BindableProperty<T> where T : IEquatable<T>
+    public class BindableProperty<T>
     {
-        private T mValue = default(T);
+        private T mValue;
         public T Value {
             get => mValue;
             set {
@@ -29,7 +29,7 @@ namespace FrameworkDesign
         }
         public void CancelOnValueChanged(Action<T> onValueChanged) => mOnValueChanged -= onValueChanged;
     }
-    public class BindablePropertyCancel<T> : ICancel where T : IEquatable<T>
+    public class BindablePropertyCancel<T> : ICancel
     {
         public BindableProperty<T> BindableProperty { get; set; }
         public Action<T> OnValueChanged { get; set; }
