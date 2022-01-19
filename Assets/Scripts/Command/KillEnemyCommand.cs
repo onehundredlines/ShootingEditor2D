@@ -1,5 +1,5 @@
 using FrameworkDesign;
-using Random = UnityEngine.Random;
+using UnityEngine;
 namespace ShootingEditor2D.Command
 {
     public class KillEnemyCommand : AbstractCommand

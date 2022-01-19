@@ -5,22 +5,25 @@ namespace ShootingEditor2D
     public class Gun : MonoBehaviour, IController
     {
         private IGunSystem mGunSystem;
-        private GunInfo mGunInfo;
+        private GunInfo mGun;
         [SerializeField]
         private Bullet mBullet;
         [SerializeField]
         private Transform mBulletPoint;
+        private int mMaxBulletCount;
         private void Awake()
         {
+            mBulletPoint = transform.Find("BulletPoint").transform;
             mGunSystem = this.GetSystem<IGunSystem>();
             //现在是一把枪，以后有不同枪的时候，这里需要查询
-            mGunInfo = mGunSystem.CurrentGunInfo;
-            mBulletPoint = transform.Find("BulletPoint").transform;
+            mGun = mGunSystem.CurrentGunInfo;
             mBullet = Resources.Load<Bullet>("Bullet");
+            mMaxBulletCount = this.SendQuery(new MaxBulletCountQuery(mGun.Name.Value));
+
         }
         public void Shoot()
         {
-            if (mGunInfo.BulletCountInGun.Value > 0 && mGunInfo.State.Value == GunState.Idle)
+            if (mGun.BulletCountInGun.Value > 0 && mGun.State.Value == GunState.Idle)
             {
                 var bullet = Instantiate(mBullet, mBulletPoint.position, Quaternion.identity);
                 if (bullet == null) return;
@@ -34,5 +37,9 @@ namespace ShootingEditor2D
             }
         }
         public IArchitecture GetArchitecture() => ShootingEditor2D.Interface;
+        public void Relaod()
+        {
+            if (mGun.State.Value == GunState.Idle && mGun.BulletCountInGun.Value < mMaxBulletCount && mGun.BulletCountOutGun.Value > 0) this.SendCommand<ReloadCommand>();
+        }
     }
 }

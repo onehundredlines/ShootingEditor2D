@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using FrameworkDesign;
+using UnityEngine;
 namespace ShootingEditor2D
 {
     public class Player : MonoBehaviour
@@ -33,7 +34,7 @@ namespace ShootingEditor2D
             mBoxCollider2D.sharedMaterial.friction = mGroundCheck.Triggered ? 0.4f : 0;
 
             if (Input.GetKey(KeyCode.J)) mGun.Shoot();
-
+            if (Input.GetKeyDown(KeyCode.R)) mGun.Relaod();
             var horizontal = Input.GetAxis("Horizontal");
             if (horizontal > 0) transform.localEulerAngles = new Vector3(0, 0, 0);
             else if (horizontal < 0) transform.localEulerAngles = new Vector3(0, 180, 0);
@@ -45,5 +46,6 @@ namespace ShootingEditor2D
             if (mRigidbody2D.velocity.y < 0 && !mGroundCheck.Triggered) mRigidbody2D.velocity -= mJumpForce * mFallMultiple * Time.deltaTime;
             else mRigidbody2D.velocity = new Vector2(horizontal * mSpeed, mRigidbody2D.velocity.y);
         }
+        public IArchitecture GetArchitecture() => ShootingEditor2D.Interface;
     }
 }
