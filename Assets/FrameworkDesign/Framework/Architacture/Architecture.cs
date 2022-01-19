@@ -31,6 +31,7 @@ namespace FrameworkDesign
         /// 将Command发送给Architecture
         /// </summary>
         void SendCommand<N>(N command) where N : ICommand;
+        TResult SendQuery<TResult>(IQuery<TResult> query);
         void SendEvent<E>() where E : new();
         void SendEvent<E>(E e);
         ICancel RegisterEvent<E>(Action<E> onEvent);
@@ -140,6 +141,11 @@ namespace FrameworkDesign
             command.SetArchitecture(this);
             command.Execute();
             // command.SetArchitecture(null);
+        }
+        public TResult SendQuery<TResult>(IQuery<TResult> query)
+        {
+            query.SetArchitecture(this);
+            return query.Do();
         }
         private readonly ITypeEventSystem mTypeEventSystem = new TypeEventSystem();
         public void SendEvent<E>() where E : new() => mTypeEventSystem.Send<E>();

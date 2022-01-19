@@ -13,9 +13,7 @@ namespace FrameworkDesign
                     var constructorInfos = type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic);
                     var constructor = Array.Find(constructorInfos, info => info.GetParameters().Length == 0);
                     if (constructor == null)
-                    {
                         throw new Exception($"NonPublic construct not find in {type.Name}");
-                    }
                     instance = constructor.Invoke(null) as T;
                 }
                 return instance;

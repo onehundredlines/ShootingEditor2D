@@ -49,7 +49,6 @@ namespace FrameworkDesign
     {
         public interface IRegistrations
         {
-
         }
         public class Registrations<T> : IRegistrations
         {
