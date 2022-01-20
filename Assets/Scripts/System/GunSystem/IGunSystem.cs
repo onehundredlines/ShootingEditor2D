@@ -6,6 +6,7 @@ namespace ShootingEditor2D
     public interface IGunSystem : ISystem
     {
         GunInfo CurrentGunInfo { get; }
+        Queue<GunInfo> GunInfos { get; }
         void PickGun(string name, int bulletInGun, int bulletOutGun);
         void ShiftGun();
     }
@@ -23,8 +24,8 @@ namespace ShootingEditor2D
             State = new BindableProperty<GunState>(GunState.Idle),
             BulletCountOutGun = new BindableProperty<int>(1)
         };
-
-        private Queue<GunInfo> gunInfoQueue = new Queue<GunInfo>();
+        public Queue<GunInfo> GunInfos => mGunInfos;
+        private readonly Queue<GunInfo> mGunInfos = new Queue<GunInfo>();
 
         /// <summary>
         /// 捡枪逻辑
@@ -36,17 +37,17 @@ namespace ShootingEditor2D
             {
                 CurrentGunInfo.BulletCountOutGun.Value += bulletInGun;
                 CurrentGunInfo.BulletCountOutGun.Value += bulletOutGun;
-            } else if (gunInfoQueue.Any(info => info.Name.Value == name))
+            } else if (mGunInfos.Any(info => info.Name.Value == name))
             {
-                var gunInfo = gunInfoQueue.First(info => info.Name.Value == name);
+                var gunInfo = mGunInfos.First(info => info.Name.Value == name);
                 gunInfo.BulletCountOutGun.Value += bulletInGun;
                 gunInfo.BulletCountOutGun.Value += bulletOutGun;
-            } else
-                EnqueueCurrentGun(name, bulletInGun, bulletOutGun);
+            } else EnqueueCurrentGun(name, bulletInGun, bulletOutGun);
         }
         public void ShiftGun()
         {
-            var previous = gunInfoQueue.Dequeue();
+            if (mGunInfos.Count <= 0) return;
+            var previous = mGunInfos.Dequeue();
             EnqueueCurrentGun(previous.Name.Value, previous.BulletCountInGun.Value, previous.BulletCountOutGun.Value);
         }
         private void EnqueueCurrentGun(string nextGunName, int nextBulletInGun, int nextBulletOutgun)
@@ -72,7 +73,7 @@ namespace ShootingEditor2D
                 }
             };
             //缓存
-            gunInfoQueue.Enqueue(currentGunInfo);
+            mGunInfos.Enqueue(currentGunInfo);
             //新枪设置为当前枪
             CurrentGunInfo.Name.Value = nextGunName;
             CurrentGunInfo.BulletCountInGun.Value = nextBulletInGun;
