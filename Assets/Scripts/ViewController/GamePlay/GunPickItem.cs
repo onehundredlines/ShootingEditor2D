@@ -1,5 +1,3 @@
-using System;
-using Command;
 using FrameworkDesign;
 using UnityEngine;
 namespace ShootingEditor2D

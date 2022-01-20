@@ -1,6 +1,5 @@
 using FrameworkDesign;
-using ShootingEditor2D;
-namespace Command
+namespace ShootingEditor2D
 {
     public class PickGunCommand : AbstractCommand
     {

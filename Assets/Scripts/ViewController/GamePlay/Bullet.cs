@@ -1,5 +1,4 @@
 ﻿using FrameworkDesign;
-using ShootingEditor2D.Command;
 using UnityEngine;
 namespace ShootingEditor2D
 {

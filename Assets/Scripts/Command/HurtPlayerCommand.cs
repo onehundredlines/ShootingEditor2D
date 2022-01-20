@@ -1,6 +1,6 @@
 using FrameworkDesign;
 using UnityEngine.SceneManagement;
-namespace ShootingEditor2D.Command
+namespace ShootingEditor2D
 {
     public class HurtPlayerCommand : AbstractCommand
     {
