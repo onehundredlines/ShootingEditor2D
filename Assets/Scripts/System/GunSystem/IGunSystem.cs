@@ -24,6 +24,10 @@ namespace ShootingEditor2D
         };
 
         private Queue<GunInfo> gunInfoQueue = new Queue<GunInfo>();
+        
+        /// <summary>
+        /// 捡枪逻辑
+        /// </summary>
         public void PickGun(string name, int bulletInGun, int bulletOutGun)
         {
             //如果和当前枪一样
@@ -34,8 +38,8 @@ namespace ShootingEditor2D
             } else if (gunInfoQueue.Any(info => info.Name.Value == name))
             {
                 var gunInfo = gunInfoQueue.First(info => info.Name.Value == name);
-                CurrentGunInfo.BulletCountOutGun.Value += bulletInGun;
-                CurrentGunInfo.BulletCountOutGun.Value += bulletOutGun;
+                gunInfo.BulletCountOutGun.Value += bulletInGun;
+                gunInfo.BulletCountOutGun.Value += bulletOutGun;
             } else
             {
                 var currentGunInfo = new GunInfo
@@ -57,10 +61,14 @@ namespace ShootingEditor2D
                         Value = CurrentGunInfo.State.Value
                     }
                 };
+                //缓存
                 gunInfoQueue.Enqueue(currentGunInfo);
+                //新枪设置为当前枪
                 CurrentGunInfo.Name.Value = name;
                 CurrentGunInfo.BulletCountInGun.Value = bulletInGun;
                 CurrentGunInfo.BulletCountOutGun.Value = bulletOutGun;
+                CurrentGunInfo.State.Value = GunState.Idle;
+                //发送换枪事件
                 this.SendEvent(new OnCurrentGunChange {Name = name});
             }
         }

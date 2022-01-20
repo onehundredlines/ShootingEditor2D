@@ -3,7 +3,6 @@ namespace ShootingEditor2D
 {
     public class ReloadCommand : AbstractCommand
     {
-
         protected override void OnExecute()
         {
             //当前枪的数据
@@ -21,6 +20,7 @@ namespace ShootingEditor2D
                     //状态切回
                     this.GetSystem<ITimeSystem>().AddTimeDelay(gunConfigItem.ReloadSeconds, () =>
                     {
+                        currentGun.State.Value = GunState.Idle;
                         //如果枪外子弹充足
                         if (currentGun.BulletCountOutGun.Value >= needBulletCount)
                         {
@@ -34,7 +34,6 @@ namespace ShootingEditor2D
                             currentGun.BulletCountInGun.Value += currentGun.BulletCountOutGun.Value;
                             currentGun.BulletCountOutGun.Value = 0;
                         }
-                        currentGun.State.Value = GunState.Idle;
                     });
                 }
             }

@@ -36,10 +36,6 @@ namespace ShootingEditor2D
 
             if (Input.GetKey(KeyCode.J)) mGun.Shoot();
             if (Input.GetKeyDown(KeyCode.R)) mGun.Reload();
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                this.SendCommand(new PickGunCommand("冲锋枪", 30, 100));
-            }
             var horizontal = Input.GetAxis("Horizontal");
             if (horizontal > 0) transform.localEulerAngles = new Vector3(0, 0, 0);
             else if (horizontal < 0) transform.localEulerAngles = new Vector3(0, 180, 0);
