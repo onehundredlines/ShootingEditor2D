@@ -10,10 +10,14 @@ namespace ShootingEditor2D
         protected override void OnExecute()
         {
             var gunSystem = this.GetSystem<IGunSystem>();
-            gunSystem.CurrentGunInfo.BulletCountInGun.Value--;
             gunSystem.CurrentGunInfo.State.Value = GunState.Shooting;
+            gunSystem.CurrentGunInfo.BulletCountInGun.Value--;
             var gunConfigItem = this.GetModel<IGunConfigModel>().GetItemByName(gunSystem.CurrentGunInfo.Name.Value);
-            this.GetSystem<ITimeSystem>().AddTimeDelay(gunConfigItem.Frequency, () => gunSystem.CurrentGunInfo.State.Value = GunState.Idle);
+            this.GetSystem<ITimeSystem>().AddTimeDelay(gunConfigItem.Frequency, () =>
+            {
+                if (gunSystem.CurrentGunInfo.BulletCountInGun.Value <= 0) this.SendCommand<ReloadCommand>();
+                else gunSystem.CurrentGunInfo.State.Value = GunState.Idle;
+            });
         }
     }
 }

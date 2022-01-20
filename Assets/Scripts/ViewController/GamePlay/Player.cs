@@ -34,7 +34,7 @@ namespace ShootingEditor2D
             mBoxCollider2D.sharedMaterial.friction = mGroundCheck.Triggered ? 0.4f : 0;
 
             if (Input.GetKey(KeyCode.J)) mGun.Shoot();
-            if (Input.GetKeyDown(KeyCode.R)) mGun.Relaod();
+            if (Input.GetKeyDown(KeyCode.R)) mGun.Reload();
             var horizontal = Input.GetAxis("Horizontal");
             if (horizontal > 0) transform.localEulerAngles = new Vector3(0, 0, 0);
             else if (horizontal < 0) transform.localEulerAngles = new Vector3(0, 180, 0);

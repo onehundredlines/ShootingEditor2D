@@ -33,11 +33,11 @@ namespace ShootingEditor2D
                 bulletTrans.rotation = trans.rotation;
                 bullet.Init(mBulletPoint);
                 bullet.gameObject.SetActive(true);
-                this.SendCommand<ShootCommand>(ShootCommand.Single);
+                this.SendCommand(ShootCommand.Single);
             }
         }
         public IArchitecture GetArchitecture() => ShootingEditor2D.Interface;
-        public void Relaod()
+        public void Reload()
         {
             if (mGun.State.Value == GunState.Idle && mGun.BulletCountInGun.Value < mMaxBulletCount && mGun.BulletCountOutGun.Value > 0) this.SendCommand<ReloadCommand>();
         }
