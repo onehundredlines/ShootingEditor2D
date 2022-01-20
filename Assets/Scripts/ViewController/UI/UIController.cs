@@ -3,7 +3,7 @@ using FrameworkDesign;
 using UnityEngine;
 namespace ShootingEditor2D
 {
-    public class UIController : MonoBehaviour, IController
+    public class UIController : ShootingEditor2DBaseController
     {
         private IStatSystem mStatSystem;
         private IPlayerModel mPlayerModel;
@@ -41,6 +41,5 @@ namespace ShootingEditor2D
             mStatSystem = null;
             mPlayerModel = null;
         }
-        public IArchitecture GetArchitecture() => ShootingEditor2D.Interface;
     }
 }

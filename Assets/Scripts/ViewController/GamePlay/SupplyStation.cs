@@ -2,7 +2,7 @@ using FrameworkDesign;
 using UnityEngine;
 namespace ShootingEditor2D
 {
-    public class SupplyStation : MonoBehaviour, IController
+    public class SupplyStation : ShootingEditor2DBaseController
     {
         private void OnTriggerEnter2D(Collider2D other)
         {
@@ -12,6 +12,5 @@ namespace ShootingEditor2D
                 Destroy(gameObject);
             }
         }
-        public IArchitecture GetArchitecture() => ShootingEditor2D.Interface;
     }
 }

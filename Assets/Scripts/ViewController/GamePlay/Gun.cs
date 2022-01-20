@@ -2,7 +2,7 @@ using FrameworkDesign;
 using UnityEngine;
 namespace ShootingEditor2D
 {
-    public class Gun : MonoBehaviour, IController
+    public class Gun : ShootingEditor2DBaseController
     {
         private IGunSystem mGunSystem;
         private GunInfo mGun;
@@ -36,7 +36,6 @@ namespace ShootingEditor2D
                 this.SendCommand(ShootCommand.Single);
             }
         }
-        public IArchitecture GetArchitecture() => ShootingEditor2D.Interface;
         public void Reload()
         {
             if (mGun.State.Value == GunState.Idle && mGun.BulletCountInGun.Value < mMaxBulletCount && mGun.BulletCountOutGun.Value > 0) this.SendCommand<ReloadCommand>();

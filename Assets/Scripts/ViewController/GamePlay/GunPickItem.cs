@@ -2,7 +2,7 @@ using FrameworkDesign;
 using UnityEngine;
 namespace ShootingEditor2D
 {
-    public class GunPickItem : MonoBehaviour, IController
+    public class GunPickItem : ShootingEditor2DBaseController
     {
         public string Name;
         public int BulletInGun;
@@ -15,6 +15,5 @@ namespace ShootingEditor2D
                 Destroy(gameObject);
             }
         }
-        public IArchitecture GetArchitecture() => ShootingEditor2D.Interface;
     }
 }

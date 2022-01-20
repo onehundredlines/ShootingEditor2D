@@ -2,7 +2,7 @@
 using UnityEngine;
 namespace ShootingEditor2D
 {
-    public class Bullet : MonoBehaviour, IController
+    public class Bullet : ShootingEditor2DBaseController
     {
         [SerializeField]
         private Rigidbody2D mRigidbody2D;
@@ -25,6 +25,5 @@ namespace ShootingEditor2D
             }
         }
         public void Init(Transform dir) => mRigidbody2D.AddForce(dir.right * mBulletForce, ForceMode2D.Impulse);
-        public IArchitecture GetArchitecture() => ShootingEditor2D.Interface;
     }
 }

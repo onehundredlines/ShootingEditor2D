@@ -2,7 +2,7 @@
 using UnityEngine;
 namespace ShootingEditor2D
 {
-    public class Player : MonoBehaviour, IController
+    public class Player : ShootingEditor2DBaseController
     {
         [SerializeField]
         private BoxCollider2D mBoxCollider2D;
@@ -50,6 +50,5 @@ namespace ShootingEditor2D
             if (mRigidbody2D.velocity.y < 0 && !mGroundCheck.Triggered) mRigidbody2D.velocity -= mJumpForce * mFallMultiple * Time.deltaTime;
             else mRigidbody2D.velocity = new Vector2(horizontal * mSpeed, mRigidbody2D.velocity.y);
         }
-        public IArchitecture GetArchitecture() => ShootingEditor2D.Interface;
     }
 }
