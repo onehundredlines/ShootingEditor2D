@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Xml;
 using UnityEngine;
 
 namespace ShootingEditor2D
@@ -30,6 +34,12 @@ namespace ShootingEditor2D
         {
             fontSize = 35
         });
+        private readonly Lazy<GUIStyle> mSaveStyle = new Lazy<GUIStyle>(() => new GUIStyle(GUI.skin.button)
+        {
+            fontSize = 30,
+            
+        });
+        private bool canSave = true;
         private void OnGUI()
         {
             var modeLabelRect = RectHelper.RectForAnchorCenter(Screen.width * 0.5f, 35, 400, 50);
@@ -43,6 +53,7 @@ namespace ShootingEditor2D
             //橡皮擦按钮
             var eraseLabelRect = new Rect(10, 100, 160, 80);
             if (GUI.Button(eraseLabelRect, "Erase", mButtonStyle.Value)) mCurrentOperateMode = OperateMode.Erase;
+            //如果模式是绘制模式
             if (mCurrentOperateMode == OperateMode.Draw)
             {
                 //地块按钮
@@ -52,7 +63,53 @@ namespace ShootingEditor2D
                 var playerButtonRect = new Rect(360, 25, 150, 50);
                 if (GUI.Button(playerButtonRect, "Player", mRightStyle.Value)) mCurrentBrushType = BrushType.Player;
             }
-
+            var saveButtonRect = new Rect(10, 190, 120, 60);
+            if (canSave && GUI.Button(saveButtonRect, "Save", mSaveStyle.Value))
+            {
+                canSave = false;
+                //缓存子级的对象
+                var infos = new List<LevelItem>(transform.childCount);
+                foreach(Transform child in transform)
+                {
+                    var childPos = child.transform.position;
+                    infos.Add(new LevelItem
+                    {
+                        Name = child.name,
+                        X = childPos.x,
+                        Y = childPos.y,
+                    });
+                    Debug.Log($"Name: {child.name}, X: {childPos.x}, Y: {childPos.y}");
+                }
+                //将缓存的对象转为XML数据
+                var document = new XmlDocument();
+                var declaration = document.CreateXmlDeclaration("1.0", "UTF-8", string.Empty);
+                document.AppendChild(declaration);
+                var level = document.CreateElement("Level");
+                document.AppendChild(level);
+                foreach(var levelItemInfo in infos)
+                {
+                    var levelItem = document.CreateElement("LevelItem");
+                    levelItem.SetAttribute("name", levelItemInfo.Name);
+                    levelItem.SetAttribute("x", levelItemInfo.X.ToString());
+                    levelItem.SetAttribute("y", levelItemInfo.Y.ToString());
+                    level.AppendChild(levelItem);
+                }
+                var stringBuilder = new StringBuilder();
+                var stringWriter = new StringWriter(stringBuilder);
+                var xmlWriter = new XmlTextWriter(stringWriter);
+                //缩进
+                xmlWriter.Formatting = Formatting.Indented;
+                document.WriteTo(xmlWriter);
+                Debug.Log(stringBuilder.ToString());
+                Debug.Log("保存结束");
+                canSave = true;
+            }
+        }
+        private class LevelItem
+        {
+            public string Name;
+            public float X;
+            public float Y;
         }
         public SpriteRenderer EmptyHighlight;
         //是否可绘制
@@ -82,26 +139,34 @@ namespace ShootingEditor2D
                 //发出射线
                 Ray ray = Camera.main.ScreenPointToRay(mousePos);
                 var hit = Physics2D.Raycast(ray.origin, Vector2.zero, 20);
-                //有碰撞说明有地块
+                //有碰撞说明有对象（目前是地块或玩家）
                 if (hit.collider)
                 {
+                    //绘制模式下为红色
                     if (mCurrentOperateMode == OperateMode.Draw) EmptyHighlight.color = Color.red;
+                    //橡皮擦模式下为粉色
                     else if (mCurrentOperateMode == OperateMode.Erase) EmptyHighlight.color = new Color(1, 0.5f, 1);
                     mCanDraw = false;
+                    //缓存鼠标位置对象（供橡皮擦功能销毁使用）
                     mCurrentObjectMouseOn = hit.collider.gameObject;
                 } else
                 {
+                    //绘制模式下为白色
                     if (mCurrentOperateMode == OperateMode.Draw) EmptyHighlight.color = Color.white;
+                    //橡皮擦模式下为蓝色
                     else if (mCurrentOperateMode == OperateMode.Erase) EmptyHighlight.color = Color.blue;
                     mCanDraw = true;
+                    //置空置针
                     mCurrentObjectMouseOn = null;
                 }
             }
             ///按下鼠标左键和不在GUI的Label上时
             if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && GUIUtility.hotControl == 0)
             {
+                //当模式为绘制，并且鼠标位置没有对象，并且可以绘制
                 if (mCanDraw && !mCurrentObjectMouseOn && mCurrentOperateMode == OperateMode.Draw)
                 {
+                    //如果是：绘制模式下地块笔刷
                     if (mCurrentBrushType == BrushType.Ground)
                     {
                         var groundPrefab = Resources.Load<GameObject>("Ground");
@@ -111,7 +176,7 @@ namespace ShootingEditor2D
                     {
                         var playerPrefab = Resources.Load<GameObject>("Player");
                         var playerGameObject = Instantiate(playerPrefab, mouseWorldPos, Quaternion.identity, transform);
-                        playerGameObject.name = "Ground";
+                        playerGameObject.name = "Player";
                     }
                     mCanDraw = false;
                 } else if (!mCanDraw && mCurrentObjectMouseOn && mCurrentOperateMode == OperateMode.Erase)
