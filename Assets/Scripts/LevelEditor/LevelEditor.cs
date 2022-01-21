@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml;
 using UnityEngine;
 
@@ -78,11 +77,10 @@ namespace ShootingEditor2D
                         X = childPos.x,
                         Y = childPos.y,
                     });
-                    Debug.Log($"Name: {child.name}, X: {childPos.x}, Y: {childPos.y}");
                 }
                 //将缓存的对象转为XML数据
                 var document = new XmlDocument();
-                var declaration = document.CreateXmlDeclaration("1.0", "UTF-8", string.Empty);
+                var declaration = document.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
                 document.AppendChild(declaration);
                 var level = document.CreateElement("Level");
                 document.AppendChild(level);
@@ -94,14 +92,21 @@ namespace ShootingEditor2D
                     levelItem.SetAttribute("y", levelItemInfo.Y.ToString());
                     level.AppendChild(levelItem);
                 }
-                var stringBuilder = new StringBuilder();
-                var stringWriter = new StringWriter(stringBuilder);
-                var xmlWriter = new XmlTextWriter(stringWriter);
-                //缩进
-                xmlWriter.Formatting = Formatting.Indented;
-                document.WriteTo(xmlWriter);
-                Debug.Log(stringBuilder.ToString());
-                Debug.Log("保存结束");
+                // 常规输出流程
+                // var stringBuilder = new StringBuilder();
+                // var stringWriter = new StringWriter(stringBuilder);
+                // var xmlWriter = new XmlTextWriter(stringWriter);
+                // //缩进
+                // xmlWriter.Formatting = Formatting.Indented;
+                // document.WriteTo(xmlWriter);
+                var levelFilesFolder = $"{Application.persistentDataPath}/LevelFiles";
+                print(levelFilesFolder);
+                if (!Directory.Exists(levelFilesFolder))
+                {
+                    Directory.CreateDirectory(levelFilesFolder);
+                }
+                var levelFilePath = $"{levelFilesFolder}/{DateTime.Now:yyyymmddhhmmss}.xml";
+                document.Save(levelFilePath);
                 canSave = true;
             }
         }
