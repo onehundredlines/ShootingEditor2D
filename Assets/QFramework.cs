@@ -10,35 +10,35 @@ namespace QFramework
         /// <summary>
         /// 注册System系统层
         /// </summary>
-        void RegisterSystem<S>(S system) where S : ISystem;
-        S GetSystem<S>() where S : class, ISystem;
+        void RegisterSystem<TSystem>(TSystem system) where TSystem : ISystem;
+        TSystem GetSystem<TSystem>() where TSystem : class, ISystem;
         /// <summary>
         /// 注册Model数据层
         /// </summary>
-        void RegisterModel<M>(M model) where M : IModel;
-        M GetModel<M>() where M : class, IModel;
+        void RegisterModel<TModel>(TModel model) where TModel : IModel;
+        TModel GetModel<TModel>() where TModel : class, IModel;
         /// <summary>
         /// 注册Utility工具层
         /// </summary>
-        void RegisterUtility<U>(U utility) where U : IUtility;
+        void RegisterUtility<TUtility>(TUtility utility) where TUtility : IUtility;
         /// <summary>
         /// 获取Utility工具
         /// 获取API
         /// </summary>
-        C GetUtility<C>() where C : class, IUtility;
+        TUtility GetUtility<TUtility>() where TUtility : class, IUtility;
         /// <summary>
         /// 创建Command，并将Command发送给Architecture
         /// </summary>
-        void SendCommand<N>() where N : ICommand, new();
+        void SendCommand<TCommand>() where TCommand : ICommand, new();
         /// <summary>
         /// 将Command发送给Architecture
         /// </summary>
-        void SendCommand<N>(N command) where N : ICommand;
+        void SendCommand<TCommand>(TCommand command) where TCommand : ICommand;
         TResult SendQuery<TResult>(IQuery<TResult> query);
-        void SendEvent<E>() where E : new();
-        void SendEvent<E>(E e);
-        ICancel RegisterEvent<E>(Action<E> onEvent);
-        void CancelEvent<E>(Action<E> onEvent);
+        void SendEvent<TEvent>() where TEvent : new();
+        void SendEvent<TEvent>(TEvent e);
+        ICancel RegisterEvent<TEvent>(Action<TEvent> onEvent);
+        void CancelEvent<TEvent>(Action<TEvent> onEvent);
     }
     /// <summary>
     /// 架构
@@ -49,11 +49,11 @@ namespace QFramework
         // 是否初始化完成
         private bool mInited;
         // 缓存要初始化的Model
-        private List<IModel> mModelList = new List<IModel>();
+        private readonly List<IModel> mModelList = new List<IModel>();
         // 缓存要初始化的System
-        private List<ISystem> mSystemList = new List<ISystem>();
+        private readonly List<ISystem> mSystemList = new List<ISystem>();
         // 注册补丁
-        public static Action<T> OnRegisterPatch = architecture => { };
+        public static readonly Action<T> OnRegisterPatch = architecture => { };
         // 类似单例，仅可在内部访问。与单例没有访问限制不同
         private static T mArchitecture;
         public static IArchitecture Interface {
@@ -86,7 +86,7 @@ namespace QFramework
         /// 子类注册模块
         /// </summary>
         protected abstract void Init();
-        private IOCContainer mContainer = new IOCContainer();
+        private readonly IOCContainer mContainer = new IOCContainer();
         /// <summary>
         /// 注册模块API
         /// </summary>
@@ -100,7 +100,7 @@ namespace QFramework
         /// 注册System层
         /// 注册API
         /// </summary>
-        public void RegisterSystem<S>(S system) where S : ISystem
+        public void RegisterSystem<TSystem>(TSystem system) where TSystem : ISystem
         {
             //给System赋值
             system.SetArchitecture(this);
@@ -112,7 +112,7 @@ namespace QFramework
         /// 注册Model层
         /// 注册API
         /// </summary>
-        public void RegisterModel<M>(M model) where M : IModel
+        public void RegisterModel<TModel>(TModel model) where TModel : IModel
         {
             //给Model赋值
             model.SetArchitecture(this);
@@ -120,27 +120,27 @@ namespace QFramework
             if (!mInited) mModelList.Add(model);
             else model.Init();
         }
-        public void RegisterUtility<U>(U utility) where U : IUtility => mContainer.Register(utility);
+        public void RegisterUtility<TUtility>(TUtility utility) where TUtility : IUtility => mContainer.Register(utility);
         /// <summary>
         /// 获取System模块
         /// </summary>
-        public S GetSystem<S>() where S : class, ISystem => mContainer.Get<S>();
+        public TSystem GetSystem<TSystem>() where TSystem : class, ISystem => mContainer.Get<TSystem>();
         /// <summary>
         /// 获取Model模块
         /// </summary>
-        public M GetModel<M>() where M : class, IModel => mContainer.Get<M>();
+        public TModel GetModel<TModel>() where TModel : class, IModel => mContainer.Get<TModel>();
         /// <summary>
         /// 获取Utility模块
         /// </summary>
-        public U GetUtility<U>() where U : class, IUtility => mContainer.Get<U>();
-        public void SendCommand<N>() where N : ICommand, new()
+        public TUtility GetUtility<TUtility>() where TUtility : class, IUtility => mContainer.Get<TUtility>();
+        public void SendCommand<TCommand>() where TCommand : ICommand, new()
         {
-            var command = new N();
+            var command = new TCommand();
             command.SetArchitecture(this);
             command.Execute();
             // command.SetArchitecture(null);
         }
-        public void SendCommand<N>(N command) where N : ICommand
+        public void SendCommand<TCommand>(TCommand command) where TCommand : ICommand
         {
             command.SetArchitecture(this);
             command.Execute();
@@ -152,10 +152,10 @@ namespace QFramework
             return query.Do();
         }
         private readonly ITypeEventSystem mTypeEventSystem = new TypeEventSystem();
-        public void SendEvent<E>() where E : new() => mTypeEventSystem.Send<E>();
-        public void SendEvent<E>(E e) => mTypeEventSystem.Send<E>(e);
-        public ICancel RegisterEvent<E>(Action<E> onEvent) => mTypeEventSystem.Register(onEvent);
-        public void CancelEvent<E>(Action<E> onEvent) => mTypeEventSystem.Cancel(onEvent);
+        public void SendEvent<TEvent>() where TEvent : new() => mTypeEventSystem.Send<TEvent>();
+        public void SendEvent<TEvent>(TEvent e) => mTypeEventSystem.Send<TEvent>(e);
+        public ICancel RegisterEvent<TEvent>(Action<TEvent> onEvent) => mTypeEventSystem.Register(onEvent);
+        public void CancelEvent<TEvent>(Action<TEvent> onEvent) => mTypeEventSystem.Cancel(onEvent);
     }
     #endregion
 
@@ -207,7 +207,6 @@ namespace QFramework
     #region Utility
     public interface IUtility
     {
-
     }
     #endregion
 
@@ -230,7 +229,7 @@ namespace QFramework
     #endregion
 
     #region Query
-    public interface IQuery<TResult> : ICanSetArchitecture, ICanGetModel, ICanGetSystem, ICanSentQuery
+    public interface IQuery<out TResult> : ICanSetArchitecture, ICanGetModel, ICanGetSystem, ICanSentQuery
     {
         TResult Do();
     }
@@ -258,45 +257,45 @@ namespace QFramework
     }
     public static class CanGetModelExtension
     {
-        public static M GetModel<M>(this ICanGetModel self) where M : class, IModel => self.GetArchitecture().GetModel<M>();
+        public static TModel GetModel<TModel>(this ICanGetModel self) where TModel : class, IModel => self.GetArchitecture().GetModel<TModel>();
     }
     public interface ICanGetSystem : IBelongToArchitecture
     {
     }
     public static class CanGetSystemExtension
     {
-        public static T GetSystem<T>(this ICanGetModel self) where T : class, ISystem => self.GetArchitecture().GetSystem<T>();
+        public static TSystem GetSystem<TSystem>(this ICanGetModel self) where TSystem : class, ISystem => self.GetArchitecture().GetSystem<TSystem>();
     }
     public interface ICanGetUtility : IBelongToArchitecture
     {
     }
     public static class CanGetUtilityExtension
     {
-        public static T GetUtility<T>(this IBelongToArchitecture self) where T : class, IUtility => self.GetArchitecture().GetUtility<T>();
+        public static TUtility GetUtility<TUtility>(this IBelongToArchitecture self) where TUtility : class, IUtility => self.GetArchitecture().GetUtility<TUtility>();
     }
     public interface ICanRegisterEvent : IBelongToArchitecture
     {
     }
     public static class CanRegisterEventExtension
     {
-        public static ICancel RegisterEvent<E>(this ICanRegisterEvent self, Action<E> onEvent) => self.GetArchitecture().RegisterEvent<E>(onEvent);
-        public static void CancelEvent<E>(this ICanRegisterEvent self, Action<E> onEvent) => self.GetArchitecture().CancelEvent(onEvent);
+        public static ICancel RegisterEvent<TEvent>(this ICanRegisterEvent self, Action<TEvent> onEvent) => self.GetArchitecture().RegisterEvent<TEvent>(onEvent);
+        public static void CancelEvent<TEvent>(this ICanRegisterEvent self, Action<TEvent> onEvent) => self.GetArchitecture().CancelEvent(onEvent);
     }
     public interface ICanSendCommand : IBelongToArchitecture
     {
     }
     public static class CanSendCommandExtension
     {
-        public static void SendCommand<T>(this ICanSendCommand self) where T : ICommand, new() => self.GetArchitecture().SendCommand<T>();
-        public static void SendCommand<T>(this ICanSendCommand self, T command) where T : ICommand => self.GetArchitecture().SendCommand<T>(command);
+        public static void SendCommand<TCommand>(this ICanSendCommand self) where TCommand : ICommand, new() => self.GetArchitecture().SendCommand<TCommand>();
+        public static void SendCommand<TCommand>(this ICanSendCommand self, TCommand command) where TCommand : ICommand => self.GetArchitecture().SendCommand<TCommand>(command);
     }
     public interface ICanSendEvent : IBelongToArchitecture
     {
     }
     public static class CanSendEventExtension
     {
-        public static void SendEvent<E>(this ICanSendEvent self) where E : new() => self.GetArchitecture().SendEvent<E>();
-        public static void SendEvent<E>(this ICanSendEvent self, E onEvent) => self.GetArchitecture().SendEvent<E>(onEvent);
+        public static void SendEvent<TEvent>(this ICanSendEvent self) where TEvent : new() => self.GetArchitecture().SendEvent<TEvent>();
+        public static void SendEvent<TEvent>(this ICanSendEvent self, TEvent onEvent) => self.GetArchitecture().SendEvent<TEvent>(onEvent);
     }
     public interface ICanSentQuery : IBelongToArchitecture
     {
@@ -310,10 +309,10 @@ namespace QFramework
     #region TypeEventSystem
     public interface ITypeEventSystem
     {
-        void Send<T>() where T : new();
-        void Send<T>(T e);
-        ICancel Register<T>(Action<T> onEvent);
-        void Cancel<T>(Action<T> onEvent);
+        void Send<TEvent>() where TEvent : new();
+        void Send<TEvent>(TEvent e);
+        ICancel Register<TEvent>(Action<TEvent> onEvent);
+        void Cancel<TEvent>(Action<TEvent> onEvent);
     }
     public interface ICancel
     {
@@ -325,14 +324,14 @@ namespace QFramework
         public Action<T> OnEvent;
         public void Cancel()
         {
-            typeEventSystem.Cancel<T>(OnEvent);
+            typeEventSystem.Cancel(OnEvent);
             typeEventSystem = null;
             OnEvent = null;
         }
     }
     public class CancelOnDestroyTrigger : MonoBehaviour
     {
-        private HashSet<ICancel> mCancel = new HashSet<ICancel>();
+        private readonly HashSet<ICancel> mCancel = new HashSet<ICancel>();
         public void AddCancel(ICancel cancel) => mCancel.Add(cancel);
         private void OnDestroy()
         {
@@ -359,35 +358,35 @@ namespace QFramework
             public Action<T> OnEvent = e => { };
         }
         public readonly Dictionary<Type, IRegistrations> RegistrationsMap = new Dictionary<Type, IRegistrations>();
-        public void Send<T>() where T : new()
+        public void Send<TEvent>() where TEvent : new()
         {
-            var e = new T();
-            Send<T>(e);
+            var e = new TEvent();
+            Send(e);
         }
-        public void Send<T>(T e)
+        public void Send<TEvent>(TEvent e)
         {
-            var type = typeof(T);
-            if (RegistrationsMap.TryGetValue(type, out var registrations)) ((Registrations<T>)registrations).OnEvent(e);
+            var type = typeof(TEvent);
+            if (RegistrationsMap.TryGetValue(type, out var registrations)) ((Registrations<TEvent>)registrations).OnEvent(e);
         }
-        public ICancel Register<T>(Action<T> onEvent)
+        public ICancel Register<TEvent>(Action<TEvent> onEvent)
         {
-            var type = typeof(T);
+            var type = typeof(TEvent);
             if (!RegistrationsMap.TryGetValue(type, out var registrations))
             {
-                registrations = new Registrations<T>();
+                registrations = new Registrations<TEvent>();
                 RegistrationsMap.Add(type, registrations);
             }
-            ((Registrations<T>)registrations).OnEvent += onEvent;
-            return new TypeEventSystemCancel<T>()
+            ((Registrations<TEvent>)registrations).OnEvent += onEvent;
+            return new TypeEventSystemCancel<TEvent>
             {
                 OnEvent = onEvent,
                 typeEventSystem = this
             };
         }
-        public void Cancel<T>(Action<T> onEvent)
+        public void Cancel<TEvent>(Action<TEvent> onEvent)
         {
-            var type = typeof(T);
-            if (RegistrationsMap.TryGetValue(type, out var registrations)) ((Registrations<T>)registrations).OnEvent -= onEvent;
+            var type = typeof(TEvent);
+            if (RegistrationsMap.TryGetValue(type, out var registrations)) ((Registrations<TEvent>)registrations).OnEvent -= onEvent;
         }
     }
     #endregion
@@ -395,7 +394,7 @@ namespace QFramework
     #region IOC
     public class IOCContainer
     {
-        private Dictionary<Type, object> mInstance = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> mInstance = new Dictionary<Type, object>();
         public void Register<T>(T instance)
         {
             var key = typeof(T);
@@ -427,16 +426,25 @@ namespace QFramework
             }
         }
         private Action<T> mOnValueChanged = v => { };
-        public BindableProperty() { }
-        public BindableProperty(T value) { Value = value; }
+        public BindableProperty(T value = default) { mValue = value; }
         public ICancel Register(Action<T> onValueChanged)
         {
             mOnValueChanged += onValueChanged;
-            return new BindablePropertyCancel<T>()
+            return new BindablePropertyCancel<T>
             {
                 BindableProperty = this,
                 OnValueChanged = onValueChanged
             };
+        }
+        public ICancel RegisterWithInitValue(Action<T> onValueChanged)
+        {
+            onValueChanged(mValue);
+            return Register(onValueChanged);
+        }
+        public static implicit operator T(BindableProperty<T> property) => property.Value;
+        public override string ToString()
+        {
+            return Value.ToString();
         }
         public void Cancel(Action<T> onValueChanged) => mOnValueChanged -= onValueChanged;
     }
