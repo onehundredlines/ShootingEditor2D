@@ -32,9 +32,6 @@ namespace ShootingEditor2D
             if (GUI.Button(eraseLabelRect, "Erase", mButtonLabelStyle.Value)) mCurrentOperateMode = OperateMode.Erase;
         }
         public SpriteRenderer EmptyHighlight;
-        //当前高亮块坐标
-        private float mCurrentHighlightPosX;
-        private float mCurrentHighlightPosY;
         //是否可绘制
         private bool mCanDraw;
         private GameObject mCurrentObjectMouseOn;
@@ -47,11 +44,10 @@ namespace ShootingEditor2D
             mouseWorldPos.x = Mathf.Floor(mouseWorldPos.x + 0.5f);
             mouseWorldPos.y = Mathf.Floor(mouseWorldPos.y + 0.5f);
             mouseWorldPos.z = 0;
-            if (GUIUtility.hotControl == 0) EmptyHighlight.gameObject.SetActive(true);
-            else EmptyHighlight.gameObject.SetActive(false);
-            //todo 这点没想明白，先接着学看看，回来再解决。
+            //当处于GUI的Button上关闭高亮块
+            EmptyHighlight.gameObject.SetActive(GUIUtility.hotControl == 0);
             //与当前高亮块的x、y值
-            if (Math.Abs(mCurrentHighlightPosX - mouseWorldPos.x) < 0.4f && Math.Abs(mCurrentHighlightPosY - mouseWorldPos.y) < 0.4f)
+            if (Math.Abs(EmptyHighlight.transform.position.x - mouseWorldPos.x) < 0.4f && Math.Abs(EmptyHighlight.transform.position.y - mouseWorldPos.y) < 0.4f)
             {
                 //不做任何事
             } else
@@ -78,14 +74,20 @@ namespace ShootingEditor2D
                     mCurrentObjectMouseOn = null;
                 }
             }
-            if (Input.GetMouseButtonDown(0) && GUIUtility.hotControl == 0)
+            ///按下鼠标左键和不在GUI的Label上时
+            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && GUIUtility.hotControl == 0)
             {
-                if (mCanDraw && mCurrentOperateMode == OperateMode.Draw)
+                if (mCanDraw && !mCurrentObjectMouseOn && mCurrentOperateMode == OperateMode.Draw)
                 {
                     var groundPrefab = Resources.Load<GameObject>("Ground");
                     var groundGameObject = Instantiate(groundPrefab, mouseWorldPos, Quaternion.identity, transform);
                     groundGameObject.name = "Ground";
-                } else if (!mCanDraw && mCurrentObjectMouseOn && mCurrentOperateMode == OperateMode.Erase) Destroy(mCurrentObjectMouseOn);
+                    mCanDraw = false;
+                } else if (!mCanDraw && mCurrentObjectMouseOn && mCurrentOperateMode == OperateMode.Erase)
+                {
+                    Destroy(mCurrentObjectMouseOn);
+                    mCurrentObjectMouseOn = null;
+                }
 
             }
         }
