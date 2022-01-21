@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace ShootingEditor2D
 {
-
     public class LevelEditor : MonoBehaviour
     {
         private enum OperateMode
@@ -11,25 +10,49 @@ namespace ShootingEditor2D
             Draw,
             Erase
         }
+        private enum BrushType
+        {
+            Ground,
+            Player
+        }
         private OperateMode mCurrentOperateMode;
+        private BrushType mCurrentBrushType = BrushType.Ground;
         private readonly Lazy<GUIStyle> mModeLabelStyle = new Lazy<GUIStyle>(() => new GUIStyle(GUI.skin.label)
         {
             fontSize = 50,
             alignment = TextAnchor.MiddleCenter
         });
-        private readonly Lazy<GUIStyle> mButtonLabelStyle = new Lazy<GUIStyle>(() => new GUIStyle(GUI.skin.button)
+        private readonly Lazy<GUIStyle> mButtonStyle = new Lazy<GUIStyle>(() => new GUIStyle(GUI.skin.button)
         {
             fontSize = 50
         });
+        private readonly Lazy<GUIStyle> mRightStyle = new Lazy<GUIStyle>(() => new GUIStyle(GUI.skin.button)
+        {
+            fontSize = 35
+        });
         private void OnGUI()
         {
-            var modeLabelRect = RectHelper.RectForAnchorCenter(Screen.width * 0.5f, 35, 300, 50);
-            GUI.Label(modeLabelRect, mCurrentOperateMode.ToString(), mModeLabelStyle.Value);
+            var modeLabelRect = RectHelper.RectForAnchorCenter(Screen.width * 0.5f, 35, 400, 50);
+            //显示绘制模式
+            if (mCurrentOperateMode == OperateMode.Draw) GUI.Label(modeLabelRect, $"{mCurrentOperateMode}: {mCurrentBrushType}", mModeLabelStyle.Value);
+            else GUI.Label(modeLabelRect, mCurrentOperateMode.ToString(), mModeLabelStyle.Value);
 
+            //绘制按钮
             var drawLabelRect = new Rect(10, 10, 160, 80);
-            if (GUI.Button(drawLabelRect, "Draw", mButtonLabelStyle.Value)) mCurrentOperateMode = OperateMode.Draw;
+            if (GUI.Button(drawLabelRect, "Draw", mButtonStyle.Value)) mCurrentOperateMode = OperateMode.Draw;
+            //橡皮擦按钮
             var eraseLabelRect = new Rect(10, 100, 160, 80);
-            if (GUI.Button(eraseLabelRect, "Erase", mButtonLabelStyle.Value)) mCurrentOperateMode = OperateMode.Erase;
+            if (GUI.Button(eraseLabelRect, "Erase", mButtonStyle.Value)) mCurrentOperateMode = OperateMode.Erase;
+            if (mCurrentOperateMode == OperateMode.Draw)
+            {
+                //地块按钮
+                var groundButtonRect = new Rect(190, 25, 150, 50);
+                if (GUI.Button(groundButtonRect, "Ground", mRightStyle.Value)) mCurrentBrushType = BrushType.Ground;
+                //玩家按钮
+                var playerButtonRect = new Rect(360, 25, 150, 50);
+                if (GUI.Button(playerButtonRect, "Player", mRightStyle.Value)) mCurrentBrushType = BrushType.Player;
+            }
+
         }
         public SpriteRenderer EmptyHighlight;
         //是否可绘制
@@ -79,16 +102,23 @@ namespace ShootingEditor2D
             {
                 if (mCanDraw && !mCurrentObjectMouseOn && mCurrentOperateMode == OperateMode.Draw)
                 {
-                    var groundPrefab = Resources.Load<GameObject>("Ground");
-                    var groundGameObject = Instantiate(groundPrefab, mouseWorldPos, Quaternion.identity, transform);
-                    groundGameObject.name = "Ground";
+                    if (mCurrentBrushType == BrushType.Ground)
+                    {
+                        var groundPrefab = Resources.Load<GameObject>("Ground");
+                        var groundGameObject = Instantiate(groundPrefab, mouseWorldPos, Quaternion.identity, transform);
+                        groundGameObject.name = "Ground";
+                    } else if (mCurrentBrushType == BrushType.Player)
+                    {
+                        var playerPrefab = Resources.Load<GameObject>("Player");
+                        var playerGameObject = Instantiate(playerPrefab, mouseWorldPos, Quaternion.identity, transform);
+                        playerGameObject.name = "Ground";
+                    }
                     mCanDraw = false;
                 } else if (!mCanDraw && mCurrentObjectMouseOn && mCurrentOperateMode == OperateMode.Erase)
                 {
                     Destroy(mCurrentObjectMouseOn);
                     mCurrentObjectMouseOn = null;
                 }
-
             }
         }
     }
