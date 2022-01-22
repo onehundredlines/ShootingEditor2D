@@ -1,4 +1,4 @@
-using FrameworkDesign;
+using QFramework;
 using UnityEngine;
 namespace ShootingEditor2D
 {
@@ -19,7 +19,7 @@ namespace ShootingEditor2D
             mGun = mGunSystem.CurrentGunInfo;
             mBullet = Resources.Load<Bullet>("Bullet");
             mMaxBulletCount = this.SendQuery(new MaxBulletCountQuery(mGun.Name.Value));
-            this.RegisterEvent<OnCurrentGunChange>(e => mMaxBulletCount = this.SendQuery(new MaxBulletCountQuery(mGunSystem.CurrentGunInfo.Name.Value))).CancelWhenGameObjectDestroy(gameObject);
+            this.RegisterEvent<OnCurrentGunChange>(e => mMaxBulletCount = this.SendQuery(new MaxBulletCountQuery(mGunSystem.CurrentGunInfo.Name.Value))).CancelOnDestroy(gameObject);
         }
         public void Shoot()
         {

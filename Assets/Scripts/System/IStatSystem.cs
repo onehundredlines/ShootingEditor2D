@@ -1,4 +1,4 @@
-using FrameworkDesign;
+using QFramework;
 namespace ShootingEditor2D
 {
     public interface IStatSystem : ISystem

@@ -1,5 +1,5 @@
 using System;
-using FrameworkDesign;
+using QFramework;
 using UnityEngine;
 namespace ShootingEditor2D
 {
@@ -19,7 +19,7 @@ namespace ShootingEditor2D
             //查询代码
             mMaxBulletCount = this.SendQuery(new MaxBulletCountQuery(mGunSystem.CurrentGunInfo.Name.Value));
 
-            this.RegisterEvent<OnCurrentGunChange>(e => mMaxBulletCount = this.SendQuery(new MaxBulletCountQuery(mGunSystem.CurrentGunInfo.Name.Value))).CancelWhenGameObjectDestroy(gameObject);
+            this.RegisterEvent<OnCurrentGunChange>(e => mMaxBulletCount = this.SendQuery(new MaxBulletCountQuery(mGunSystem.CurrentGunInfo.Name.Value))).CancelOnDestroy(gameObject);
         }
         //Lazy无法在别的周期中初始化，只能在OnGUI中，这里用回调解决初始化的问题。
         private readonly Lazy<GUIStyle> mLabelStyle = new Lazy<GUIStyle>(() => new GUIStyle(GUI.skin.label)

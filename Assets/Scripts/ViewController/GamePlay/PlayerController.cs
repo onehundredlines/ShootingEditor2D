@@ -38,9 +38,9 @@ namespace ShootingEditor2D
             input.z = v;
 
             moveSpeed = Mathf.MoveTowards(moveSpeed, input.normalized.magnitude * maxMoveSpeed, acceleration * Time.deltaTime);
-            move = input * Time.deltaTime * moveSpeed;
-            move = this.cameraTransform.TransformDirection(move);
-            move += Vector3.up * ySpeed * Time.deltaTime;
+            move = input * (Time.deltaTime * moveSpeed);
+            move = cameraTransform.TransformDirection(move);
+            move += Vector3.up * (ySpeed * Time.deltaTime);
             
             cont.Move(move);
         }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using FrameworkDesign;
+using QFramework;
 namespace ShootingEditor2D
 {
     public interface IGunSystem : ISystem
@@ -21,7 +21,7 @@ namespace ShootingEditor2D
         {
             BulletCountInGun = new BindableProperty<int>(value: 3),
             Name = new BindableProperty<string>(value: "手枪"),
-            State = new BindableProperty<GunState>(GunState.Idle),
+            State = new BindableProperty<GunState>(),
             BulletCountOutGun = new BindableProperty<int>(1)
         };
         public Queue<GunInfo> GunInfos => mGunInfos;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using UnityEngine;
@@ -43,8 +44,7 @@ namespace ShootingEditor2D
         {
             var modeLabelRect = RectHelper.RectForAnchorCenter(Screen.width * 0.5f, 35, 400, 50);
             //显示绘制模式
-            if (mCurrentOperateMode == OperateMode.Draw) GUI.Label(modeLabelRect, $"{mCurrentOperateMode}: {mCurrentBrushType}", mModeLabelStyle.Value);
-            else GUI.Label(modeLabelRect, mCurrentOperateMode.ToString(), mModeLabelStyle.Value);
+            GUI.Label(modeLabelRect, mCurrentOperateMode == OperateMode.Draw ? $"{mCurrentOperateMode}: {mCurrentBrushType}" : mCurrentOperateMode.ToString(), mModeLabelStyle.Value);
 
             //绘制按钮
             var drawLabelRect = new Rect(10, 10, 160, 80);
@@ -88,8 +88,8 @@ namespace ShootingEditor2D
                 {
                     var levelItem = document.CreateElement("LevelItem");
                     levelItem.SetAttribute("name", levelItemInfo.Name);
-                    levelItem.SetAttribute("x", levelItemInfo.X.ToString());
-                    levelItem.SetAttribute("y", levelItemInfo.Y.ToString());
+                    levelItem.SetAttribute("x", levelItemInfo.X.ToString(CultureInfo.InvariantCulture));
+                    levelItem.SetAttribute("y", levelItemInfo.Y.ToString(CultureInfo.InvariantCulture));
                     level.AppendChild(levelItem);
                 }
                 // 常规输出流程

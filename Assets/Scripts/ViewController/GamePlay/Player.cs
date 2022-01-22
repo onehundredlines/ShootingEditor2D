@@ -1,4 +1,4 @@
-﻿using FrameworkDesign;
+﻿using QFramework;
 using UnityEngine;
 namespace ShootingEditor2D
 {
@@ -47,7 +47,7 @@ namespace ShootingEditor2D
                 mJumped = false;
                 mRigidbody2D.AddForce(mJumpForce, ForceMode2D.Impulse);
             }
-            if (mRigidbody2D.velocity.y < 0 && !mGroundCheck.Triggered) mRigidbody2D.velocity -= mJumpForce * mFallMultiple * Time.deltaTime;
+            if (mRigidbody2D.velocity.y < 0 && !mGroundCheck.Triggered) mRigidbody2D.velocity -= mJumpForce * (mFallMultiple * Time.deltaTime);
             else mRigidbody2D.velocity = new Vector2(horizontal * mSpeed, mRigidbody2D.velocity.y);
         }
     }

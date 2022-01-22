@@ -42,17 +42,17 @@ namespace ShootingEditor2D
         {
             var document = new XmlDocument();
             document.LoadXml(xml);
-            var levelRootNode = document?.SelectSingleNode("Level");
+            var levelRootNode = document.SelectSingleNode("Level");
             if (levelRootNode == null) return;
             foreach(XmlElement levelItemNode in levelRootNode)
             {
-                var name = levelItemNode.Attributes["name"].Value;
-                float x = float.Parse(levelItemNode.Attributes["x"].Value);
-                float y = float.Parse(levelItemNode.Attributes["y"].Value);
+                var levelAttributeName = levelItemNode.Attributes["name"].Value;
+                float levelAttributeX = float.Parse(levelItemNode.Attributes["x"].Value);
+                float levelAttributeY = float.Parse(levelItemNode.Attributes["y"].Value);
 
-                var levelItemPrefabs = Resources.Load<GameObject>(name);
+                var levelItemPrefabs = Resources.Load<GameObject>(levelAttributeName);
                 var levelItemGameObj = Instantiate(levelItemPrefabs, transform);
-                levelItemGameObj.transform.position = new Vector3(x, y, 0);
+                levelItemGameObj.transform.position = new Vector3(levelAttributeX, levelAttributeY, 0);
             }
         }
     }

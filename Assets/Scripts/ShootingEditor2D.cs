@@ -1,4 +1,4 @@
-using FrameworkDesign;
+using QFramework;
 namespace ShootingEditor2D
 {
     public class ShootingEditor2D : Architecture<ShootingEditor2D>

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 namespace ShootingEditor2D.Tests
 {
     public class TmeSystemTest : MonoBehaviour

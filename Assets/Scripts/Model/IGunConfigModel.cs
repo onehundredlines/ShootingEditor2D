@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using FrameworkDesign;
+using QFramework;
 namespace ShootingEditor2D
 {
     public interface IGunConfigModel : IModel

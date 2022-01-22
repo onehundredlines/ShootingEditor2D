@@ -1,5 +1,5 @@
 using System;
-using FrameworkDesign;
+using QFramework;
 namespace ShootingEditor2D
 {
     public enum GunState

@@ -1,4 +1,4 @@
-using FrameworkDesign;
+using QFramework;
 using UnityEngine.SceneManagement;
 namespace ShootingEditor2D
 {
